@@ -3,8 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from './firebase/firebaseConfig';
 import { ActivityIndicator, View } from 'react-native';
 
 import LoginScreen from './src/screens/auth/LoginScreen';
@@ -45,21 +43,12 @@ const AuthStack = () => (
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
-  const { user, role, login } = useAuthStore();
+  const { user, role, handleAuthenticatedUser } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          login(firebaseUser.email, '');
-          useAuthStore.setState({
-            user: firebaseUser,
-            role: userData.role,
-            studentId: userData.studentId || null,
-          });
-        }
+        await handleAuthenticatedUser(firebaseUser);
       }
       setInitializing(false);
     });
