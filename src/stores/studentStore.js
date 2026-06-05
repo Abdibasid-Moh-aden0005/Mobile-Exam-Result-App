@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import {
   collection,
   getDocs,
@@ -8,8 +8,8 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../../firebase/firebaseConfig';
+} from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const useStudentStore = create((set) => ({
   students: [],
@@ -20,8 +20,11 @@ const useStudentStore = create((set) => ({
   fetchStudents: async () => {
     set({ loading: true, error: null });
     try {
-      const querySnapshot = await getDocs(collection(db, 'students'));
-      const students = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, "students"));
+      const students = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       set({ students, loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
@@ -31,9 +34,12 @@ const useStudentStore = create((set) => ({
   fetchStudentById: async (id) => {
     set({ loading: true, error: null });
     try {
-      const docSnap = await getDoc(doc(db, 'students', id));
+      const docSnap = await getDoc(doc(db, "students", id));
       if (docSnap.exists()) {
-        set({ selectedStudent: { id: docSnap.id, ...docSnap.data() }, loading: false });
+        set({
+          selectedStudent: { id: docSnap.id, ...docSnap.data() },
+          loading: false,
+        });
       } else {
         set({ selectedStudent: null, loading: false });
       }
@@ -45,9 +51,8 @@ const useStudentStore = create((set) => ({
   createStudent: async (studentData) => {
     set({ loading: true, error: null });
     try {
-      const docRef = await addDoc(collection(db, 'students'), {
+      const docRef = await addDoc(collection(db, "students"), {
         ...studentData,
-        userId: null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -61,7 +66,7 @@ const useStudentStore = create((set) => ({
   updateStudent: async (id, studentData) => {
     set({ loading: true, error: null });
     try {
-      await updateDoc(doc(db, 'students', id), {
+      await updateDoc(doc(db, "students", id), {
         ...studentData,
         updatedAt: serverTimestamp(),
       });
@@ -74,7 +79,7 @@ const useStudentStore = create((set) => ({
   deleteStudent: async (id) => {
     set({ loading: true, error: null });
     try {
-      await deleteDoc(doc(db, 'students', id));
+      await deleteDoc(doc(db, "students", id));
       set({ loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });

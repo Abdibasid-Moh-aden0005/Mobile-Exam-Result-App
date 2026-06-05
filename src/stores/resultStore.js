@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import {
   collection,
   getDocs,
@@ -9,8 +9,8 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../../firebase/firebaseConfig';
+} from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const useResultStore = create((set) => ({
   results: [],
@@ -21,8 +21,11 @@ const useResultStore = create((set) => ({
   fetchResults: async () => {
     set({ loading: true, error: null });
     try {
-      const querySnapshot = await getDocs(collection(db, 'results'));
-      const results = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, "results"));
+      const results = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       set({ results, loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
@@ -33,12 +36,15 @@ const useResultStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const q = query(
-        collection(db, 'results'),
-        where('studentId', '==', studentId),
-        where('published', '==', true)
+        collection(db, "results"),
+        where("studentId", "==", studentId),
+        where("published", "==", true),
       );
       const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const results = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       set({ studentResults: results, loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
@@ -48,7 +54,7 @@ const useResultStore = create((set) => ({
   createResult: async (resultData) => {
     set({ loading: true, error: null });
     try {
-      const docRef = await addDoc(collection(db, 'results'), {
+      const docRef = await addDoc(collection(db, "results"), {
         ...resultData,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -63,7 +69,7 @@ const useResultStore = create((set) => ({
   updateResult: async (id, resultData) => {
     set({ loading: true, error: null });
     try {
-      await updateDoc(doc(db, 'results', id), {
+      await updateDoc(doc(db, "results", id), {
         ...resultData,
         updatedAt: serverTimestamp(),
       });
@@ -76,7 +82,7 @@ const useResultStore = create((set) => ({
   deleteResult: async (id) => {
     set({ loading: true, error: null });
     try {
-      await deleteDoc(doc(db, 'results', id));
+      await deleteDoc(doc(db, "results", id));
       set({ loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
