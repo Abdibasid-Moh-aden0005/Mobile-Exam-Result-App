@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import {
   collection,
   getDocs,
@@ -7,8 +7,8 @@ import {
   updateDoc,
   deleteDoc,
   serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../../firebase/firebaseConfig';
+} from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const useCourseStore = create((set) => ({
   courses: [],
@@ -18,8 +18,11 @@ const useCourseStore = create((set) => ({
   fetchCourses: async () => {
     set({ loading: true, error: null });
     try {
-      const querySnapshot = await getDocs(collection(db, 'courses'));
-      const courses = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, "courses"));
+      const courses = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       set({ courses, loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
@@ -29,7 +32,7 @@ const useCourseStore = create((set) => ({
   createCourse: async (courseData) => {
     set({ loading: true, error: null });
     try {
-      const docRef = await addDoc(collection(db, 'courses'), {
+      const docRef = await addDoc(collection(db, "courses"), {
         ...courseData,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -44,7 +47,7 @@ const useCourseStore = create((set) => ({
   updateCourse: async (id, courseData) => {
     set({ loading: true, error: null });
     try {
-      await updateDoc(doc(db, 'courses', id), {
+      await updateDoc(doc(db, "courses", id), {
         ...courseData,
         updatedAt: serverTimestamp(),
       });
@@ -57,7 +60,7 @@ const useCourseStore = create((set) => ({
   deleteCourse: async (id) => {
     set({ loading: true, error: null });
     try {
-      await deleteDoc(doc(db, 'courses', id));
+      await deleteDoc(doc(db, "courses", id));
       set({ loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });

@@ -12,6 +12,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useAuthStore = create((set) => ({
   user: null,
@@ -76,6 +77,11 @@ const useAuthStore = create((set) => ({
         loading: false,
         error: null,
       });
+
+      await AsyncStorage.setItem(
+        "userData",
+        JSON.stringify({ uid, email, role: userData.role, studentId }),
+      );
     } catch (err) {
       set({ loading: false, error: err.message });
     }
@@ -84,9 +90,27 @@ const useAuthStore = create((set) => ({
   logout: async () => {
     await signOut(auth);
     set({ user: null, role: null, studentId: null, error: null });
+    await AsyncStorage.removeItem("userData");
   },
 
   clearError: () => set({ error: null }),
+
+  restoreSession: async () => {
+    try {
+      const stored = await AsyncStorage.getItem("userData");
+      if (stored) {
+        const { uid, email, role, studentId } = JSON.parse(stored);
+        set({ user: { uid, email }, role, studentId, loading: false });
+      }
+    } catch {
+      set({ error: "Failed to restore session" });
+    }
+  },
+
+  clearSession: async () => {
+    set({ user: null, role: null, studentId: null, error: null });
+    await AsyncStorage.removeItem("userData");
+  },
 }));
 
 export default useAuthStore;

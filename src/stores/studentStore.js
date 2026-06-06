@@ -25,7 +25,7 @@ const useStudentStore = create((set) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      set({ students, loading: false });
+      set({ students: students, loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
     }
@@ -35,14 +35,16 @@ const useStudentStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const docSnap = await getDoc(doc(db, "students", id));
-      if (docSnap.exists()) {
-        set({
-          selectedStudent: { id: docSnap.id, ...docSnap.data() },
+      if (!docSnap.exists()) {
+        return set({
+          selectedStudent: "That Student Not Found",
           loading: false,
         });
-      } else {
-        set({ selectedStudent: null, loading: false });
       }
+      set({
+        selectedStudent: { id: docSnap.id, ...docSnap.data() },
+        loading: false,
+      });
     } catch (err) {
       set({ loading: false, error: err.message });
     }
