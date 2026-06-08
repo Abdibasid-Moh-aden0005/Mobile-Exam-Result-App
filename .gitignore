@@ -43,5 +43,8 @@ yarn-error.*
 # pdf files :
 *.pdf
 
+# .md files :
+FIREBASE_AUTH_PERSISTENCE.md
+
 # agent config files :
 
