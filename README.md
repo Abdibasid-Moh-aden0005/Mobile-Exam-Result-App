@@ -37,6 +37,7 @@ App.tsx: `onAuthStateChanged` fires → calls `handleAuthenticatedUser()`
 Reads `users/{firebaseAuthUid}`
 
 **Not found** → auto-creates:
+
 ```
 users/{firebaseAuthUid}
 {
@@ -58,6 +59,7 @@ Query: students WHERE email == "amina@example.com"
 ```
 
 **Match found** → updates `users/{uid}`:
+
 ```
 users/{firebaseAuthUid}
 {
@@ -85,6 +87,7 @@ Student Dashboard → "My Results"
 
 `StudentResultsScreen` reads `studentId` from `useAuthStore`
 Queries:
+
 ```
 results WHERE studentId == "abc123..." AND published == true
 ```
@@ -125,3 +128,22 @@ results/resultDoc789
 ## Admin Setup
 
 To make yourself admin: Firebase Console → `users` collection → find your UID doc → change `role` from `"student"` to `"admin"`
+
+## clone the repo
+
+```bash
+git clone https://github.com/Abdibasid-Moh-aden0005/Mobile-Exam-Result-App
+```
+
+## install dependencies
+
+```bash
+cd exam-results-app
+npm install
+```
+
+## run the app
+
+```bash
+npx expo start -c
+```
